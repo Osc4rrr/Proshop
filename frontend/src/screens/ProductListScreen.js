@@ -5,7 +5,9 @@ import { Table, Button, Row, Col} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux'; 
 import Message from '../components/Message'; 
 import Loader from '../components/Loader'; 
-import {listProducts, deleteProduct} from '../actions/productActions';
+import {listProducts, deleteProduct, createProduct} from '../actions/productActions';
+
+import {PRODUCT_CREATE_RESET} from '../constants/productConstants';
 
 const ProductListScreen = ({history}) => {
 
@@ -20,16 +22,26 @@ const ProductListScreen = ({history}) => {
     const productDelete = useSelector(state => state.productDelete); 
     const {loading:loadingDelete, error:errorDelete, success:successDelete} = productDelete;
 
+    const productCreate = useSelector(state => state.productCreate); 
+    const {loading:loadingCreate, error:errorCreate, success:successCreate, product:createdProduct} = productCreate;
+
 
 
     useEffect(() => {
-        if(userInfo && userInfo.isAdmin){
-            dispatch(listProducts());
-        }else{
+        dispatch({type: PRODUCT_CREATE_RESET}); 
+
+        if(!userInfo.isAdmin){
             history.push('/login');
         }
+
+        if(successCreate)
+        {
+            history.push(`/admin/product/${createdProduct._id}/edit`)
+        }else{
+            dispatch(listProducts());
+        }
         
-    }, [dispatch, history, userInfo, successDelete]); 
+    }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct]); 
 
 
     const deleteHandler = (id) => {
@@ -40,8 +52,8 @@ const ProductListScreen = ({history}) => {
         
     }
 
-    const createProductHandler = (product) => {
-        //Create product
+    const createProductHandler = () => {
+        dispatch(createProduct())
     } 
     return (
         <>
@@ -58,6 +70,9 @@ const ProductListScreen = ({history}) => {
         </Row>
             {loadingDelete && <Loader/>}
             {errorDelete && <Message variant="danger">{errorDelete}</Message>}
+
+            {loadingCreate && <Loader/>}
+            {errorCreate && <Message variant="danger">{errorCreate}</Message>}
             {loading ? <Loader/> : error ? <Message variant="danger">{error}</Message> : (
                 <Table stripe bordered hover responsive className="table-sm">
                     <thead>
