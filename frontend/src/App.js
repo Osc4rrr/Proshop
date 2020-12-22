@@ -33,6 +33,8 @@ function App() {
             <Container>
               <Route path='/' component={HomeScreen} exact />
               <Route path='/search/:keyword' component={HomeScreen} exact />
+              <Route path='/page/:pageNumber' component={HomeScreen} exact />
+              <Route path='/search/:keyword/page/:pageNumber' component={HomeScreen} exact />
               <Route path='/login' component={LoginScreen} />
               <Route path='/shipping' component={ShippingScreen} />
               <Route path='/order/:id' component={OrderScreen} />
@@ -44,7 +46,8 @@ function App() {
               <Route path='/register' component={RegisterScreen} />
               <Route path="/profile" component={ProfileScreen}></Route>
               <Route path="/admin/user/:id/edit" component={UserEditScreen}></Route>
-              <Route path="/admin/productList" component={ProductListScreen}></Route>
+              <Route path="/admin/productList" component={ProductListScreen} exact></Route>
+              <Route path="/admin/productList/:pageNumber" component={ProductListScreen} exact></Route>
               <Route path="/admin/product/:id/edit" component={ProductEditScreen}></Route>
               <Route path="/admin/orderlist" component={OrderListScreen}></Route>
             </Container>
